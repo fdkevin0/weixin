@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"github.com/parnurzeal/gorequest"
 	"net/url"
 )
@@ -10,8 +11,8 @@ type AccessTokenServer struct {
 	AppSecret string `json:"secret"` //第三方用户唯一凭证密钥，即appsecret
 }
 
-//https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
 func (srv *AccessTokenServer) GetAccessToken() {
+	//https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
 	requestUrl := url.URL{
 		Scheme: "https",
 		Host:   "api.weixin.qq.com",
@@ -22,7 +23,13 @@ func (srv *AccessTokenServer) GetAccessToken() {
 			"secret":     []string{srv.AppSecret},
 		}.Encode(),
 	}
+	resp := new(GetAccessTokenResponse)
 	gorequest.New().
 		Get(requestUrl.String()).
-		End()
+		EndStruct(resp)
+	if resp.Error != nil {
+
+	}
+	fmt.Println(resp.AccessToken, resp.ExpiresIn)
+	client.AccessToken = resp.AccessToken
 }

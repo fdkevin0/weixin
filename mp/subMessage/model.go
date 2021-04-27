@@ -59,9 +59,9 @@ type getTemplateListResponse struct {
 }
 
 type sendPostBody struct {
-	ToUser      string           `json:"touser"`      //接收者（用户）的 openid
-	TemplateId  string           `json:"template_id"` //所需下发的订阅模板id
-	Page        string           `json:"page"`        //跳转网页时填写
-	MiniProgram core.MiniProgram `json:"miniprogram"` //跳转小程序时填写，格式如{ "appid": "pagepath": { "value": any } }
-	Data        interface{}      `json:"data"`        //模板内容，格式形如 { "key1": { "value": any }, "key2": { "value": any } }
+	ToUser      string            `json:"touser"`      //接收者（用户）的 openid
+	TemplateId  string            `json:"template_id"` //所需下发的订阅模板id
+	Page        string            `json:"page"`        //跳转网页时填写
+	MiniProgram *core.MiniProgram `json:"miniprogram"` //跳转小程序时填写，格式如{ "appid": "pagepath": { "value": any } }
+	Data        interface{}       `json:"data"`        //模板内容，格式形如 { "key1": { "value": any }, "key2": { "value": any } }
 }

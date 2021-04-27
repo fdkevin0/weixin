@@ -8,8 +8,14 @@ import (
 	"net/url"
 )
 
+var client Client
+
 type Client struct {
 	AccessToken string
+}
+
+func GetClient() Client {
+	return client
 }
 
 func (clt Client) GetDataCommon(method string, path string, query url.Values, postBody interface{}, data interface{}) (errData Error, err error) {
@@ -18,6 +24,7 @@ func (clt Client) GetDataCommon(method string, path string, query url.Values, po
 		Host:   "api.weixin.qq.com",
 	}
 	requestUrl.Path = path
+	query = make(map[string][]string)
 	query.Add("access_token", clt.AccessToken)
 	requestUrl.RawQuery = query.Encode()
 
@@ -32,9 +39,14 @@ func (clt Client) GetDataCommon(method string, path string, query url.Values, po
 		request.Get(requestUrl.String())
 	}
 
-	resp, body, errs := request.EndStruct(errData)
-	if errData.ErrorCode != 0 || resp.StatusCode != http.StatusOK || errs != nil {
+	resp, body, errs := request.EndStruct(&errData)
+	if errData.ErrorCode != 0 {
+		err = errors.New(errData.ErrorMessage)
+		return
+	}
+	if resp.StatusCode != http.StatusOK || errs != nil {
 		err = errors.New("")
+		return
 	}
 	if data != nil {
 		err = json.Unmarshal(body, data)
